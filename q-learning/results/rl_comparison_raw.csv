@@ -1,0 +1,81 @@
+method,seed,states_correct
+Plain Q-learning,1,27
+Plain Q-learning,2,24
+Plain Q-learning,3,26
+Plain Q-learning,4,27
+Plain Q-learning,5,28
+Plain Q-learning,6,25
+Plain Q-learning,7,27
+Plain Q-learning,8,27
+Plain Q-learning,9,23
+Plain Q-learning,10,25
+SARSA,1,27
+SARSA,2,25
+SARSA,3,28
+SARSA,4,29
+SARSA,5,25
+SARSA,6,27
+SARSA,7,28
+SARSA,8,26
+SARSA,9,26
+SARSA,10,27
+UCB,1,25
+UCB,2,20
+UCB,3,24
+UCB,4,27
+UCB,5,22
+UCB,6,24
+UCB,7,27
+UCB,8,28
+UCB,9,23
+UCB,10,22
+Monte Carlo,1,24
+Monte Carlo,2,24
+Monte Carlo,3,23
+Monte Carlo,4,25
+Monte Carlo,5,21
+Monte Carlo,6,21
+Monte Carlo,7,27
+Monte Carlo,8,25
+Monte Carlo,9,23
+Monte Carlo,10,27
+"Double Q-learning
+(production)",1,28
+"Double Q-learning
+(production)",2,27
+"Double Q-learning
+(production)",3,26
+"Double Q-learning
+(production)",4,29
+"Double Q-learning
+(production)",5,23
+"Double Q-learning
+(production)",6,19
+"Double Q-learning
+(production)",7,15
+"Double Q-learning
+(production)",8,19
+"Double Q-learning
+(production)",9,19
+"Double Q-learning
+(production)",10,26
+"Contextual
+Bandit",1,30
+"Contextual
+Bandit",2,30
+"Contextual
+Bandit",3,30
+"Contextual
+Bandit",4,30
+"Contextual
+Bandit",5,30
+"Contextual
+Bandit",6,30
+"Contextual
+Bandit",7,30
+"Contextual
+Bandit",8,30
+"Contextual
+Bandit",9,30
+"Contextual
+Bandit",10,30

@@ -154,7 +154,7 @@ def compute_smp(T3412: float, T3324: float, interval: float, ce: int) -> SmpResu
     if r.tau_fired:
         e_tau = E_TAU_BASE_MJ * CE_SYNC_SCALE[ce]
         r.tau_energy_mj = e_tau
-        avg_p += e_tau / (T3412 * 1000.0) if T3412 > 0 else 0.0
+        avg_p += e_tau / (T3412 ) if T3412 > 0 else 0.0
 
     r.avg_power_mw = avg_p
     r.lifetime_yr = (BATTERY_MWH / avg_p) / 8760.0 if avg_p > 0 else 999.0

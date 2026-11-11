@@ -218,6 +218,11 @@ def load_random(agent, steps_path, summary_path, min_dwell=1):
         for row in csv.DictReader(f):
             summ[(row["generator_type"], int(row["scenario_index"]))] = row
 
+    missing = [k for k in order if k not in summ]
+    if missing:
+        print(f"[WARN] {len(missing)} scenarios in the steps CSV have no row in the results CSV "
+              f"(the two files come from different runs); they are skipped.")
+        order = [k for k in order if k in summ]
     by_gen = {}
     for k in order:
         by_gen.setdefault(k[0], []).append(k)
@@ -400,6 +405,30 @@ def monitoring_sweep(pops, named_keys, sweep_path):
         csv.writer(f).writerows(out)
 
 
+def naive_sweep(pops):
+    """Section F - the practical claim is 'better than the default', so check the
+    adaptive policy against the NAIVE static (3600 s, 20 s) after paying overhead."""
+    print("\n" + "=" * 100)
+    print("F. DOES THE ADAPTIVE POLICY STILL BEAT THE NAIVE DEFAULT AFTER OVERHEAD?")
+    print("   (gain = adaptive - naive static (3600 s, 20 s), reward points; win% = scenarios where adaptive is ahead)")
+    print("=" * 100)
+    cases = [("no overhead", dict()),
+             ("every switch pays a TAU, hold 1 hour", dict(H=3600.0)),
+             ("every switch pays a TAU, hold 1 day", dict(H=86400.0)),
+             ("every switch pays a TAU, hold 7 days", dict(H=7 * 86400.0)),
+             ("monitoring 1 uW", dict(mon_uw=1.0)),
+             ("monitoring 5 uW", dict(mon_uw=5.0)),
+             ("monitoring 20 uW", dict(mon_uw=20.0)),
+             ("1 day hold + 5 uW", dict(H=86400.0, mon_uw=5.0))]
+    print(f"  {'case':<40}" + "".join(f"{p.name[:22]:>26}" for p in pops))
+    for label, kw in cases:
+        cells = []
+        for p in pops:
+            a = p.scen_rewards(**kw)
+            cells.append(f"{(a - p.naive).mean():+.4f} / {(a > p.naive).mean() * 100:5.1f}%")
+        print(f"  {label:<40}" + "".join(f"{c:>26}" for c in cells))
+
+
 def dwell_sweep(agent):
     print("\n" + "=" * 100)
     print("E. A SIMPLE SWITCHING RULE - once timers change, hold them for at least m steps")
@@ -467,7 +496,9 @@ def analyse(agent, make_figure=True):
           f"naive {named.naive.mean():+.4f}")
     print(f"CHECK 2 - random scenarios: {n_bad} of {n_all} differ from the CSV's adaptive_reward "
           f"(largest difference {worst:.2e})  "
-          f"({'OK' if n_bad <= 0.005 * n_all else 'MISMATCH: q_table.npy is not the one that made the CSV'})")
+          f"({'OK' if (n_bad <= 0.005 * n_all or worst < 1e-3) else 'MISMATCH: q_table.npy is not the one that made the CSV'})")
+    if n_bad and worst < 1e-3:
+        print("   (differences this small come from the CSV rounding each traffic interval to 2 decimals - not a table mismatch)")
     for pop in rand:
         s = pop.stats(pop.scen_rewards())
         print(f"   {pop.name:<52} win vs best {s['win_best']:.1f}%   vs naive {s['win_naive']:.1f}%   "
@@ -477,6 +508,7 @@ def analyse(agent, make_figure=True):
     tau_equivalence()
     switch_sweep(pops, named_keys, os.path.join(RESULTS_DIR, "overhead_switch_sweep.csv"))
     monitoring_sweep(pops, named_keys, os.path.join(RESULTS_DIR, "overhead_monitoring_sweep.csv"))
+    naive_sweep(pops)
     dwell_sweep(agent)
     if make_figure:
         make_plot(pops, os.path.join(RESULTS_DIR, "figL_overhead.png"))

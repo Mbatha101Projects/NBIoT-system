@@ -118,11 +118,11 @@ if __name__ == "__main__":
     parser.add_argument("--episodes", type=int, default=60000)
     parser.add_argument("--episode-length", type=int, default=20)
     parser.add_argument("--w-lifetime", type=float, default=0.7)
-    parser.add_argument("--w-delay", type=float, default=1.0,
+    parser.add_argument("--w-delay", type=float, default=0.45,
                         help="Scaling factor on top of the per-traffic-bucket "
                              "delay weight table in environment.py — see "
                              "NbIotEnv docstring for details.")
-    parser.add_argument("--seed", type=int, default=11)
+    parser.add_argument("--seed", type=int, default=13)
     parser.add_argument("--alpha", type=float, default=0.1)
     parser.add_argument("--gamma", type=float, default=0.9)
     parser.add_argument("--epsilon-decay", type=float, default=0.995)

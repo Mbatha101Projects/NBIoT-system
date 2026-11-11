@@ -305,7 +305,7 @@ struct SmpResult {
 static double meanSojourn(NbIotState s, double T3412, double T3324, int ce)
 {
     switch (s) {
-        case PSM:    return T3412;
+        case PSM:    return std::max(T3412 - T3324, 0.0);
         case SYNC:   return LAMBDA_SYNC_BASE * CE_SYNC_SCALE[ce] * GAMMA_SYNC;
         case RRC:    return RRC_MEAN_S;
         case TX:     return (LAMBDA_TX_BASE * CE_TX_SCALE[ce] * GAMMA_TX)
@@ -399,7 +399,7 @@ static SmpResult computeSmp(double T3412, double T3324,
     if (r.tauFired) {
         double e_tau  = E_TAU_BASE_MJ * CE_SYNC_SCALE[ce];
         r.tauEnergyMJ = e_tau;
-        avgP         += e_tau / (T3412 * 1000.0);  // mJ → mW
+        avgP         += e_tau / (T3412 );  
     }
 
     r.avgPowerMW = avgP;
